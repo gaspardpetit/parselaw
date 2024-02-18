@@ -10,13 +10,15 @@ src = [
     "https://laws-lois.justice.gc.ca/eng/XML/T-13.xml",
     "https://laws-lois.justice.gc.ca/eng/XML/SOR-2018-227.xml"
 ]
+
 for url in src:
     act = fed.process_document(url)
     file_name = f"out/{act.title} - {act.chapter.replace('/', '-')}.md"
 
     with open(file_name, "w", encoding="utf-8") as f:
-        formatter = fed.FormatterMarkdown(f)
-        formatter.format(act)
+        formatter = fed.FormatterMarkdown()
+        md = formatter.format(act)
+        f.write(md)
 
 for url in ["https://s3.ca-central-1.amazonaws.com/manuels-manuals-opic-cipo/MOPOP_English.html"]:
     import requests

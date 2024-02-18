@@ -189,82 +189,80 @@ class Formatter:
         pass
 
 class FormatterMarkdown(Formatter):
-    def __init__(self, file):
-        self.file=file
+    def __init__(self):
+        pass
     
-    def _write(self, text:str):
-        self.file.write(text)
-
-    def format(self, act:Act):
-        self.print_title(act=act)
+    def format(self, act:Act) -> str:
+        txt:appender = appender()
+        txt.write(self.str_title(act=act))
         
         for section in act.sections:
-            self.print_section_header(act, section)
+            txt.write(self.str_section_header(act, section))
             if len(section.paragraphs) > 0:
                 for paragraph in section.paragraphs:
                     if len(paragraph.subparagraph) > 0:
                         for subparagraph in paragraph.subparagraph:
-                            self.print_subparagraph(act=act, section=section, paragraph=paragraph, subparagraph=subparagraph)
+                            txt.write(self.str_subparagraph(act=act, section=section, paragraph=paragraph, subparagraph=subparagraph))
                     else:
-                        self.print_paragraph(act=act, section=section, subsection=None, paragraph=paragraph)
+                        txt.write(self.str_paragraph(act=act, section=section, subsection=None, paragraph=paragraph))
             elif len(section.subsections) > 0:
                 for subsection in section.subsections:
                     if len(subsection.paragraphs) > 0:
                         for paragraph in subsection.paragraphs:
-                            self.print_paragraph(act=act, section=section, subsection=subsection, paragraph=paragraph)
+                            txt.write(self.str_paragraph(act=act, section=section, subsection=subsection, paragraph=paragraph))
                     elif len(subsection.definitions) > 0:
                         for definition in subsection.definitions:
-                            self.print_definition(act=act, section=section, subsection=subsection, definition=definition)
+                            txt.write(self.str_definition(act=act, section=section, subsection=subsection, definition=definition))
                     else:
-                        self.print_subsection(act=act, section=section, subsection=subsection)
+                        txt.write(self.str_subsection(act=act, section=section, subsection=subsection))
             elif len(section.definitions) > 0:
                 for definition in section.definitions:
-                    self.print_definition(act=act, section=section, subsection=None, definition=definition)
+                    txt.write(self.str_definition(act=act, section=section, subsection=None, definition=definition))
             else:
-                self.print_section(act, section)
+                txt.write(self.str_section(act, section))
 
         for schedule in act.schedules:
-            self.print_schedule(act, schedule)
+            txt.write(self.str_schedule(act, schedule))
+        return str(txt)
     
-    def print_h1(self, text:str):
+    def str_h1(self, text:str) -> str:
         txt = appender()
         txt.print()
         txt.print(text)
         txt.print("=" * len(text))
         txt.print()
-        self._write(str(txt))
+        return str(txt)
 
-    def print_h2(self, text:str):
+    def str_h2(self, text:str) -> str:
         txt = appender()
         txt.print()
         txt.print(text)
         txt.print("-" * len(text))
         txt.print()
-        self._write(str(txt))
+        return str(txt)
 
-    def print_h3(self, text:str):
+    def str_h3(self, text:str) -> str:
         txt = appender()
         txt.print()
         txt.print("### " +  text)
         txt.print()
-        self._write(str(txt))
+        return str(txt)
 
-    def print_title(self, act:Act) -> str:
+    def str_title(self, act:Act) -> str:
         txt = appender()
         if act.short_title:
-            self.print_h1(f"{act.short_title} ({act.long_title}) - {act.chapter}")
+            txt.write(self.str_h1(f"{act.short_title} ({act.long_title}) - {act.chapter}"))
         else:
-            self.print_h1(f"{act.long_title} - {act.chapter}")
+            txt.write(self.str_h1(f"{act.long_title} - {act.chapter}"))
         txt.print(f"Consolidated on {act.consolidated}")
         txt.print()
 
-        self._write(str(txt))
-        
+        return str(txt)
 
-    def print_section_header(self, act:Act, section:Section):
-        self.print_h2(f"Section {section.label} : {section.heading} / {section.marginal_note}")
+    def str_section_header(self, act:Act, section:Section) -> str:
+        return self.str_h2(f"Section {section.label} : {section.heading} / {section.marginal_note}")
 
-    def print_section(self, act:Act, section:Section):
+    def str_section(self, act:Act, section:Section):
         txt = appender()
         enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         if not is_empty(section.repealed):
@@ -272,9 +270,9 @@ class FormatterMarkdown(Formatter):
         else:
             txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.text}\n")
-        self._write(str(txt))
-
-    def print_definition(self, act:Act, section:Section, subsection:Subsection, definition:Definition):
+        return str(txt)
+    
+    def str_definition(self, act:Act, section:Section, subsection:Subsection, definition:Definition)  -> str:
         enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if subsection:
@@ -371,10 +369,9 @@ class FormatterMarkdown(Formatter):
                 txt.print(f"According to Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, \"{definition.term_en}\" translate to French as \"{definition.term_fr}\".")
                 txt.print()
                     
+        return str(txt)
 
-        self._write(str(txt))
-        
-    def print_paragraph(self, act:Act, section:Section, subsection:Subsection, paragraph:Paragraph):
+    def str_paragraph(self, act:Act, section:Section, subsection:Subsection, paragraph:Paragraph):
         enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if subsection:
@@ -504,9 +501,9 @@ class FormatterMarkdown(Formatter):
                 else:
                     txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                         f"    {section.label}{paragraph.label} {paragraph.text}\n")
-        self._write(str(txt))
+        return str(txt)
 
-    def print_subparagraph(self, act:Act, section:Section, paragraph:Paragraph, subparagraph:Subparagraph):
+    def str_subparagraph(self, act:Act, section:Section, paragraph:Paragraph, subparagraph:Subparagraph) -> str:
         enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if not is_empty(section.text) and not is_empty(paragraph.text):
@@ -525,9 +522,9 @@ class FormatterMarkdown(Formatter):
         else:
             txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.label}{paragraph.label}{subparagraph.label} {subparagraph.text}\n")
-        self._write(str(txt))
+        return str(txt)
 
-    def print_subsection(self, act:Act, section:Section, subsection:Subsection):
+    def str_subsection(self, act:Act, section:Section, subsection:Subsection) -> str:
         enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if subsection.repealed:
@@ -540,9 +537,9 @@ class FormatterMarkdown(Formatter):
             else:
                 txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                     f"    {section.label}{subsection.label} {subsection.text}\n")
-        self._write(str(txt))
+        return str(txt)
     
-    def print_schedule_form(self, act:Act, schedule:Schedule, part:FormSchedule):
+    def str_schedule_form(self, act:Act, schedule:Schedule, part:FormSchedule) -> str:
         enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         txt.print()
@@ -552,27 +549,29 @@ class FormatterMarkdown(Formatter):
         txt.print(f"Form Title: {part.form_title}")
         txt.print(f"Form Content:")
         txt.print(f"{part.form_content}")
-        self._write(str(txt))
+        return str(txt)
 
-    def print_schedule_provision(self, act:Act, schedule:Schedule, part:Provision):
+    def str_schedule_provision(self, act:Act, schedule:Schedule, part:Provision) -> str:
         txt = appender()
         txt.print()
         txt.print(f"{part.text}")
-        self._write(str(txt))
+        return str(txt)
 
-    def print_schedule_table_group(self, act:Act, schedule:Schedule, part:TableGroup):
+    def str_schedule_table_group(self, act:Act, schedule:Schedule, part:TableGroup) -> str:
+        txt = appender()
         for table in part.tables:
-            self.print_schedule_table_group_table(
+            txt.write(self.str_schedule_table_group_table(
                 act=act,
                 schedule=schedule,
                 table_group=schedule,
-                table=table)
+                table=table))
+        return str(txt)
 
-    def print_schedule_table_group_table(self, act:Act, schedule:Schedule, table_group:TableGroup, table:TableGroupTable):
-        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
-        self.print_h3(f"{table_group.label} of the {act.title}: {table.caption} - {table.title}")
-
+    def str_schedule_table_group_table(self, act:Act, schedule:Schedule, table_group:TableGroup, table:TableGroupTable) -> str:
         txt = appender()
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
+        txt.write(self.str_h3(f"{table_group.label} of the {act.title}: {table.caption} - {table.title}"))
+
         txt.print()
         txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} provides the following table:")
         txt.print()
@@ -584,41 +583,43 @@ class FormatterMarkdown(Formatter):
                 txt.write(f"| {entry} ")
             txt.write(f"|\n")
         txt.print()
-        self._write(str(txt))
-    
-    def print_schedule_heading(self, act:Act, schedule:Schedule, part:Heading):
-        self.print_h3(f"{schedule.label} of the {act.title}: {part.heading_label}")
+        return str(txt)
+
+    def str_schedule_heading(self, act:Act, schedule:Schedule, part:Heading):
         txt = appender()
+        txt.write(self.str_h3(f"{schedule.label} of the {act.title}: {part.heading_label}"))
         txt.print(f"{part.heading_title}")
-        self._write(str(txt))
+        return str(txt)
 
-    def print_schedule_bilingual_group(self, act:Act, schedule:Schedule, part:BilingualGroupSchedule):
-        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
-        self.print_h2(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}")
-
+    def str_schedule_bilingual_group(self, act:Act, schedule:Schedule, part:BilingualGroupSchedule):
         txt = appender()
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
+        txt.write(self.str_h2(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}"))
+
         txt.print("|        |")
         txt.print("| ------ |")
         for entry in part.items_en:
             txt.print(f"| {entry} |")
-        self._write(str(txt))
+        return str(txt)
 
-    def print_schedule(self, act:Act, schedule:Schedule):
-        self.print_h2(schedule.label)
+    def str_schedule(self, act:Act, schedule:Schedule):
+        txt = appender()
+        txt.write(self.str_h2(schedule.label))
         for part in schedule.parts:
-            self.print_schedule_part(act=act, schedule=schedule, part=part)
+            txt.write(self.str_schedule_part(act=act, schedule=schedule, part=part))
+        return str(txt)
 
-    def print_schedule_part(self, act:Act, schedule:Schedule, part:SchedulePart):
+    def str_schedule_part(self, act:Act, schedule:Schedule, part:SchedulePart):
         if isinstance(part, BilingualGroupSchedule):
-            self.print_schedule_bilingual_group(act=act, schedule=schedule, part=part)
+            return self.str_schedule_bilingual_group(act=act, schedule=schedule, part=part)
         elif isinstance(part,Heading):
-            self.print_schedule_heading(act=act, schedule=schedule, part=part)
+            return self.str_schedule_heading(act=act, schedule=schedule, part=part)
         elif isinstance(part,TableGroup):
-            self.print_schedule_table_group(act=act, schedule=schedule, part=part)
+            return self.str_schedule_table_group(act=act, schedule=schedule, part=part)
         elif isinstance(part,FormSchedule):
-            self.print_schedule_form(act=act, schedule=schedule, part=part)
+            return self.str_schedule_form(act=act, schedule=schedule, part=part)
         elif isinstance(part,Provision):
-            self.print_schedule_provision(act=act, schedule=schedule, part=part)
+            return self.str_schedule_provision(act=act, schedule=schedule, part=part)
         else:
             raise RuntimeError(f"unexpected schedule part in {act.title} under {schedule.label}: {part}")
 
