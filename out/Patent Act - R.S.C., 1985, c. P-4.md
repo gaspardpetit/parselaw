@@ -3919,9 +3919,15 @@ Section 134 , subsection (2)  of the Canadian "Patent Act" states:
 >     134 (2)  For greater certainty, the Governor in Council may make rules or regulations under paragraphs 12(1)(d), (g), (h) and (k) for the purposes of this section and sections 104 to 133.
 
 
+SCHEDULE 1 
+-----------
 
-SCHEDULE 1  of the Patent Act:  - 
-----------------------------------
+
+### SCHEDULE 1  of the Patent Act:  - 
+
+
+SCHEDULE 1  of the Canadian "Patent Act" provides the following table:
+
 | Column 1 | Column 2 |
 | -------- | -------- |
 | abacavir (ABC) | tablet, 300 mg (as sulfate); oral solution, 100 mg (as sulfate)/5 mL |
@@ -3986,6 +3992,11 @@ SCHEDULE 1  of the Patent Act:  -
 | zalcitabine | capsule or tablet, 0.375 mg or 0.750 mg |
 | zidovudine (ZDV or AZT) | tablet, 300 mg; capsule, 100 mg or 250 mg; oral solution or syrup, 50 mg/5 mL; solution for IV infusion injection, 10 mg/mL in 20-mL vial |
 
+
+SCHEDULE 2 
+-----------
+
+
 SCHEDULE 2  of the Canadian "Patent Act"
 ----------------------------------------
 
@@ -4041,6 +4052,10 @@ SCHEDULE 2  of the Canadian "Patent Act"
 | Vanuatu |
 | Yemen |
 | Zambia |
+
+SCHEDULE 3 
+-----------
+
 
 SCHEDULE 3  of the Canadian "Patent Act"
 ----------------------------------------
@@ -4119,6 +4134,10 @@ SCHEDULE 3  of the Canadian "Patent Act"
 | Venezuela |
 | Zimbabwe |
 
+SCHEDULE 4 
+-----------
+
+
 SCHEDULE 4  of the Canadian "Patent Act"
 ----------------------------------------
 
@@ -4145,3 +4164,11 @@ SCHEDULE 4  of the Canadian "Patent Act"
 | Chinese Taipei |
 | Turkey |
 | United Arab Emirates |
+
+
+
+
+
+
+
+

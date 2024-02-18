@@ -4299,7 +4299,13 @@ Section 237  : Other Rules /
 
 Section 237  of the Canadian "Patent Rules", was repealed: [Repealed, SOR/2021-131, s. 26]
 
+
+SCHEDULE 1 
+-----------
+
+
 SCHEDULE 1  of the Canadian "Patent Rules" provides the following form:
+
 Form Id: FORM 1 
 Form Title: Application for Reissue
 Form Content:
@@ -4316,7 +4322,9 @@ Form Content:
     5  The knowledge of the new facts giving rise to the application were obtained by the patentee on or about ____________ 
     in the following manner: ____________. 
       
+
 SCHEDULE 1  of the Canadian "Patent Rules" provides the following form:
+
 Form Id: FORM 2 
 Form Title: Disclaimer
 Form Content:
@@ -4335,21 +4343,29 @@ Form Content:
       (2)  The patentee disclaims the entirety of claim ____________ with the exception of the subject-matter of the invention defined by the following claim: ____________. 
       
 
+Schedule 2 
+-----------
 
-Schedule 2  of the Patent Rules: PART 1 - Fee in Respect of Extension of Time
------------------------------------------------------------------------------
+
+### Schedule 2  of the Patent Rules: PART 1 - Fee in Respect of Extension of Time
+
+
+Schedule 2  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 1 | Fee for applying for an extension of time, in respect of each period of time referred to in the application for an extension  | 277.00 |
 
 
-Schedule 2  of the Patent Rules: PART 2 
-----------------------------------------
+### Schedule 2  of the Patent Rules: PART 2 
+
 [Repealed, SOR/2021-131, s. 25]
 
+### Schedule 2  of the Patent Rules: PART 3 - Fees in Respect of Applications for a Patent
 
-Schedule 2  of the Patent Rules: PART 3 - Fees in Respect of Applications for a Patent
---------------------------------------------------------------------------------------
+
+Schedule 2  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 6 | Application fee (a) small entity fee  | 225.00 |
@@ -4382,8 +4398,11 @@ Schedule 2  of the Patent Rules: PART 3 - Fees in Respect of Applications for a 
 | 15 | Fee for reinstatement of an application deemed to be abandoned, in respect of each failure to take an action | 277.00 |
 
 
-Schedule 2  of the Patent Rules: PART 4 - Fees in Respect of International Applications
----------------------------------------------------------------------------------------
+### Schedule 2  of the Patent Rules: PART 4 - Fees in Respect of International Applications
+
+
+Schedule 2  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 16 | Transmittal fee for the performance of the tasks referred to in Rule 14 of the Regulations under the PCT  | 416.00 |
@@ -4397,8 +4416,11 @@ Schedule 2  of the Patent Rules: PART 4 - Fees in Respect of International Appli
 | 23 | Additional fee for late payment under subsection 154(4) of these Rules  | 150.00 |
 
 
-Schedule 2  of the Patent Rules: PART 5 - Fees in Respect of Patents
---------------------------------------------------------------------
+### Schedule 2  of the Patent Rules: PART 5 - Fees in Respect of Patents
+
+
+Schedule 2  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 24 | Fee for requesting the correction of an error under subsection 109(1) of these Rules, for each patent referred to in the request for correction | 277.00 |
@@ -4421,8 +4443,11 @@ Schedule 2  of the Patent Rules: PART 5 - Fees in Respect of Patents
 | 32 | Fee to advertise an application under section 65 or 127 of the Act on the website of the Canadian Intellectual Property Office  | 277.00 |
 
 
-Schedule 2  of the Patent Rules: PART 6 - Fees in Respect of Registration of Documents or Recording of Transfers
-----------------------------------------------------------------------------------------------------------------
+### Schedule 2  of the Patent Rules: PART 6 - Fees in Respect of Registration of Documents or Recording of Transfers
+
+
+Schedule 2  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 33 | Fee for requesting the registration of a document relating to a patent or an application for a patent, for each patent or application for a patent to which the document relates. | 125.00 |
@@ -4430,8 +4455,11 @@ Schedule 2  of the Patent Rules: PART 6 - Fees in Respect of Registration of Doc
 | 35 | Fee for requesting that a transfer be recorded under section 49 of the Act, for each patent or application for a patent to which the transfer relates  | 125.00 |
 
 
-Schedule 2  of the Patent Rules: PART 7 - Fees in Respect of Information or Copies
-----------------------------------------------------------------------------------
+### Schedule 2  of the Patent Rules: PART 7 - Fees in Respect of Information or Copies
+
+
+Schedule 2  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 36 | Fee for requesting a certified copy in paper form (a) for each certification  | 44.00 |
@@ -4446,8 +4474,15 @@ Schedule 2  of the Patent Rules: PART 7 - Fees in Respect of Information or Copi
 | 40 | Fee for requesting that the Patent Office provide information concerning the status of a patent or an application for a patent, for each patent or application for a patent  | 19.00 |
 
 
-SCHEDULE 3  of the Patent Rules:  - Transitional Provisions
------------------------------------------------------------
+SCHEDULE 3 
+-----------
+
+
+### SCHEDULE 3  of the Patent Rules:  - Transitional Provisions
+
+
+SCHEDULE 3  of the Canadian "Patent Rules" provides the following table:
+
 | Item | Column 1 - Description | Column 2 - Amount ($) |
 | ---- | ---------------------- | --------------------- |
 | 1 | (a) for the dates of each of the second, third and fourth anniversaries of the day on which the patent was issued, Fee for maintaining in effect the rights accorded by a patent granted on the basis of a category 1 application (i) small entity fee  | 50.00 |
@@ -4458,3 +4493,8 @@ SCHEDULE 3  of the Patent Rules:  - Transitional Provisions
 | 1 | (c) for the dates of each of the 10th, 11th, 12th, 13th and 14th anniversaries of the day on which the patent was issued, Fee for maintaining in effect the rights accorded by a patent granted on the basis of a category 1 application (ii) standard fee  | 347.00 |
 | 1 | (d) for the dates of each of the 15th and 16th anniversaries of the day on which the patent was issued, Fee for maintaining in effect the rights accorded by a patent granted on the basis of a category 1 application (i) small entity fee  | 253.00 |
 | 1 | (d) for the dates of each of the 15th and 16th anniversaries of the day on which the patent was issued, Fee for maintaining in effect the rights accorded by a patent granted on the basis of a category 1 application (ii) standard fee  | 624.00 |
+
+
+
+
+

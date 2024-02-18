@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 def is_empty(text:str) -> bool:
     return text is None or text == ""
 
+
 class appender:
     def __init__(self):
         self.text:str = ""
@@ -32,25 +33,35 @@ class TableGroupTable:
     def add_row(self, row:List[str]):
         self.rows += [row]
 
-class Schedule:
+class SchedulePart:
     def __init__(self):
         pass
 
-class BilingualGroupSchedule(Schedule):
-    def __init__(self, label:str, items_en:List[str], items_fr:List[str]):
-        self.label=label
+class Schedule:
+    def __init__(self, label:str):
+        self.label = label
+        self.parts:List[SchedulePart] = []
+    
+    def add_part(self, part:SchedulePart):
+        self.parts +=  [part]
+
+class Provision(SchedulePart):
+    def __init__(self, text:str):
+        self.text = text
+
+class BilingualGroupSchedule(SchedulePart):
+    def __init__(self, items_en:List[str], items_fr:List[str]):
         self.items_en=items_en
         self.items_fr=items_fr
         pass
 
-class Heading(Schedule):
-    def __init__(self, label:str, title:str, heading_label:str, heading_title:str):
-        self.label=label
+class Heading(SchedulePart):
+    def __init__(self, title:str, heading_label:str, heading_title:str):
         self.title=title
         self.heading_title=heading_title
         self.heading_label=heading_label
 
-class TableGroup(Schedule):
+class TableGroup(SchedulePart):
     def __init__(self, label:str, title:str):
         self.tables = []
         self.label=label
@@ -59,9 +70,8 @@ class TableGroup(Schedule):
     def add_table(self, table:TableGroupTable):
         self.tables += [table]
 
-class FormSchedule(Schedule):
-    def __init__(self, label:str, title:str, form_label:str, form_title:str, form_content:str):
-        self.label = label
+class FormSchedule(SchedulePart):
+    def __init__(self, title:str, form_label:str, form_title:str, form_content:str):
         self.title = title
         self.form_label=form_label
         self.form_title=form_title
@@ -228,6 +238,13 @@ class FormatterMarkdown(Formatter):
         txt.print()
         txt.print(text)
         txt.print("-" * len(text))
+        txt.print()
+        self._write(str(txt))
+
+    def print_h3(self, text:str):
+        txt = appender()
+        txt.print()
+        txt.print("### " +  text)
         txt.print()
         self._write(str(txt))
 
@@ -519,29 +536,38 @@ class FormatterMarkdown(Formatter):
                     f"    {section.label}{subsection.label} {subsection.text}\n")
         self._write(str(txt))
     
-    def print_schedule_form(self, act:Act, schedule:FormSchedule):
+    def print_schedule_form(self, act:Act, schedule:Schedule, part:FormSchedule):
         txt = appender()
+        txt.print()
         txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\" provides the following form:")
-        txt.print(f"Form Id: {schedule.form_label}")
-        txt.print(f"Form Title: {schedule.form_title}")
+        txt.print()
+        txt.print(f"Form Id: {part.form_label}")
+        txt.print(f"Form Title: {part.form_title}")
         txt.print(f"Form Content:")
-        txt.print(f"{schedule.form_content}")
+        txt.print(f"{part.form_content}")
         self._write(str(txt))
 
-    def print_schedule_table_group(self, act:Act, schedule:TableGroup):
-        for table in schedule.tables:
+    def print_schedule_provision(self, act:Act, schedule:Schedule, part:Provision):
+        txt = appender()
+        txt.print()
+        txt.print(f"{part.text}")
+        self._write(str(txt))
+
+    def print_schedule_table_group(self, act:Act, schedule:Schedule, part:TableGroup):
+        for table in part.tables:
             self.print_schedule_table_group_table(
                 act=act,
+                schedule=schedule,
                 table_group=schedule,
                 table=table)
 
-    def print_schedule_table_group_table(self, act:Act, table_group:TableGroup, table:TableGroupTable):
+    def print_schedule_table_group_table(self, act:Act, schedule:Schedule, table_group:TableGroup, table:TableGroupTable):
+        self.print_h3(f"{table_group.label} of the {act.title}: {table.caption} - {table.title}")
+
         txt = appender()
         txt.print()
+        txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\" provides the following table:")
         txt.print()
-        txt.print(f"{table_group.label} of the {table_group.title}: {table.caption} - {table.title}")
-        txt.print("-" * len(f"{table_group.label} of the {table_group.title}: {table.caption} - {table.title}"))
-
         txt.print(f"| {' | '.join(table.columns)} |")
         txt.print(f"| {' | '.join(['-' * len(col) for col in table.columns])} |")
 
@@ -549,36 +575,54 @@ class FormatterMarkdown(Formatter):
             for j, entry in enumerate(row):
                 txt.write(f"| {entry} ")
             txt.write(f"|\n")
+        txt.print()
         self._write(str(txt))
     
-    def print_schedule_heading(self, act:Act, schedule:Heading):
+    def print_schedule_heading(self, act:Act, schedule:Schedule, part:Heading):
+        self.print_h3(f"{schedule.label} of the {act.title}: {part.heading_label}")
         txt = appender()
-        txt.print()
-        txt.print()
-        txt.print(f"{schedule.label} of the {act.title}: {schedule.heading_label}")
-        txt.print("-" * len(f"{schedule.label} of the {act.title}: {schedule.heading_label}"))
-        txt.print(f"{schedule.heading_title}")
+        txt.print(f"{part.heading_title}")
         self._write(str(txt))
 
-    def print_schedule_bilingual_group(self, act:Act, schedule:BilingualGroupSchedule):
+    def print_schedule_bilingual_group(self, act:Act, schedule:Schedule, part:BilingualGroupSchedule):
         self.print_h2(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"")
 
         txt = appender()
         txt.print("|        |")
         txt.print("| ------ |")
-        for entry in schedule.items_en:
+        for entry in part.items_en:
             txt.print(f"| {entry} |")
         self._write(str(txt))
 
     def print_schedule(self, act:Act, schedule:Schedule):
-        if isinstance(schedule, BilingualGroupSchedule):
-            self.print_schedule_bilingual_group(act=act, schedule=schedule)
-        elif isinstance(schedule,Heading):
-            self.print_schedule_heading(act=act, schedule=schedule)
-        elif isinstance(schedule,TableGroup):
-            self.print_schedule_table_group(act=act, schedule=schedule)
-        elif isinstance(schedule,FormSchedule):
-            self.print_schedule_form(act=act, schedule=schedule)
+        self.print_h2(schedule.label)
+        for part in schedule.parts:
+            self.print_schedule_part(act=act, schedule=schedule, part=part)
+
+    def print_schedule_part(self, act:Act, schedule:Schedule, part:SchedulePart):
+        if isinstance(part, BilingualGroupSchedule):
+            self.print_schedule_bilingual_group(act=act, schedule=schedule, part=part)
+        elif isinstance(part,Heading):
+            self.print_schedule_heading(act=act, schedule=schedule, part=part)
+        elif isinstance(part,TableGroup):
+            self.print_schedule_table_group(act=act, schedule=schedule, part=part)
+        elif isinstance(part,FormSchedule):
+            self.print_schedule_form(act=act, schedule=schedule, part=part)
+        elif isinstance(part,Provision):
+            self.print_schedule_provision(act=act, schedule=schedule, part=part)
+        else:
+            raise RuntimeError(f"unexpected schedule part in {act.title} under {schedule.label}: {part}")
+
+class FederalXmlParser:
+    def parse_provision(self, elem:ET.Element) -> Provision:
+        return Provision(text=xml_to_text(elem))
+
+    def parse_repealed(self, elem:ET.Element) -> Heading:
+        return Heading(
+            title="",
+            heading_label="",
+            heading_title=xml_to_text(elem)
+            )
 
 def xml_to_text(element):
     if element is None:
@@ -803,6 +847,8 @@ def process_document(url:str) -> Act:
     for schedule_elem in document.findall('Schedule'):
         label_elem = schedule_elem.find("ScheduleFormHeading/Label")
         titletext_elem = schedule_elem.find("ScheduleFormHeading/TitleText")
+        schedule:Schedule = Schedule(label=xml_to_text(label_elem))
+        act.add_schedule(schedule)
 
         if label_elem is None:
             label_elem = titletext_elem
@@ -832,13 +878,12 @@ def process_document(url:str) -> Act:
                     return str
 
                 form_content_schedule:FormSchedule = FormSchedule(
-                    label=xml_to_text(label_elem),
                     title=xml_to_text(title_elem),
                     form_label=xml_to_text(form_label_elem),
                     form_title=xml_to_text(form_title_elem),
                     form_content=print_form_content(elem, 1)
                 )
-                act.add_schedule(form_content_schedule)
+                schedule.add_part(form_content_schedule)
                 continue
             elif elem.tag == "TableGroup":
                 caption_text = ""
@@ -847,7 +892,7 @@ def process_document(url:str) -> Act:
                     label=xml_to_text(label_elem),
                     title=xml_to_text(title_elem),
                 )
-                act.add_schedule(table_group_schedule)
+                schedule.add_part(table_group_schedule)
 
                 for table_elem in elem:
                     if table_elem.tag == "Caption":
@@ -977,26 +1022,30 @@ def process_document(url:str) -> Act:
                 heading_label_elem = elem.find("Label")
                 heading_title_elem = elem.find("TitleText")
                 heading_schedule:Heading = Heading(
-                    label=xml_to_text(label_elem),
                     title=xml_to_text(title_elem),
                     heading_label=xml_to_text(heading_label_elem),
                     heading_title=xml_to_text(heading_title_elem),
                 )
-                act.add_schedule(heading_schedule)
+                schedule.add_part(heading_schedule)
                 continue
 
             elif elem.tag == "BilingualGroup":
                 bilingual_group:BilingualGroupSchedule = BilingualGroupSchedule(
-                    label=xml_to_text(label_elem),
                     items_en=[xml_to_text(entry) for entry in elem.findall('BilingualItemEn')],
                     items_fr=[xml_to_text(entry) for entry in elem.findall('BilingualItemFr')],
                 )
-                act.add_schedule(bilingual_group)
+                schedule.add_part(bilingual_group)
                 continue
             elif elem.tag == "BillPiece":
                 continue
+            elif elem.tag == "Provision":
+                provision = FederalXmlParser().parse_provision(elem)
+                schedule.add_part(provision)
+            elif elem.tag == "Repealed":
+                provision = FederalXmlParser().parse_repealed(elem)
+                schedule.add_part(provision)
             else:
-                raise RuntimeError(f"Unexepected tag: {elem.tag}")
+                raise RuntimeError(f"Unexepected tag: {elem.tag} while parsing {act.title}")
     return act
 
 def change_extension(filename, newext):

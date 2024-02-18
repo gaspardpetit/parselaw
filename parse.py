@@ -2,7 +2,11 @@ import parse_fedxml as fed
 
 src = [
     "https://laws-lois.justice.gc.ca/eng/XML/P-4.xml",
-    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2019-251.xml"
+    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2019-251.xml",
+    "https://laws-lois.justice.gc.ca/eng/XML/C-42.xml",
+    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2023-24.xml",
+    "https://laws-lois.justice.gc.ca/eng/XML/I-9.xml",
+    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2018-120.xml"
 ]
 for url in src:
     act = fed.process_document(url)
