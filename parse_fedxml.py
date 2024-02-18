@@ -561,9 +561,9 @@ class FormatterMarkdown(Formatter):
         self._write(str(txt))
 
     def print_schedule_bilingual_group(self, act:Act, schedule:BilingualGroupSchedule):
+        self.print_h2(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"")
+
         txt = appender()
-        txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"")
-        txt.print("-" * len(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\""))
         txt.print("|        |")
         txt.print("| ------ |")
         for entry in schedule.items_en:
@@ -987,7 +987,7 @@ def process_document(url:str) -> Act:
 
             elif elem.tag == "BilingualGroup":
                 bilingual_group:BilingualGroupSchedule = BilingualGroupSchedule(
-                    label=label,
+                    label=xml_to_text(label_elem),
                     items_en=[xml_to_text(entry) for entry in elem.findall('BilingualItemEn')],
                     items_fr=[xml_to_text(entry) for entry in elem.findall('BilingualItemFr')],
                 )

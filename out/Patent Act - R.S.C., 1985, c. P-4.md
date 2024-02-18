@@ -3985,8 +3985,10 @@ SCHEDULE 1  of the Patent Act:  -
 | verapamil | tablet, 40 mg or 80 mg (hydrochloride); injection, 2.5 mg (hydrochloride)/mL in 2-mL ampoule |
 | zalcitabine | capsule or tablet, 0.375 mg or 0.750 mg |
 | zidovudine (ZDV or AZT) | tablet, 300 mg; capsule, 100 mg or 250 mg; oral solution or syrup, 50 mg/5 mL; solution for IV infusion injection, 10 mg/mL in 20-mL vial |
-<Element 'Label' at 0x000001EC78B62B60> of the Canadian "Patent Act"
---------------------------------------------------------------------
+
+SCHEDULE 2  of the Canadian "Patent Act"
+----------------------------------------
+
 |        |
 | ------ |
 | Afghanistan |
@@ -4039,8 +4041,10 @@ SCHEDULE 1  of the Patent Act:  -
 | Vanuatu |
 | Yemen |
 | Zambia |
-<Element 'Label' at 0x000001EC78B62B60> of the Canadian "Patent Act"
---------------------------------------------------------------------
+
+SCHEDULE 3  of the Canadian "Patent Act"
+----------------------------------------
+
 |        |
 | ------ |
 | Albania |
@@ -4114,8 +4118,10 @@ SCHEDULE 1  of the Patent Act:  -
 | Uruguay |
 | Venezuela |
 | Zimbabwe |
-<Element 'Label' at 0x000001EC78B62B60> of the Canadian "Patent Act"
---------------------------------------------------------------------
+
+SCHEDULE 4  of the Canadian "Patent Act"
+----------------------------------------
+
 |        |
 | ------ |
 | Cyprus |
