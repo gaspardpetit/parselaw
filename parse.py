@@ -6,7 +6,9 @@ src = [
     "https://laws-lois.justice.gc.ca/eng/XML/C-42.xml",
     "https://laws-lois.justice.gc.ca/eng/XML/SOR-2023-24.xml",
     "https://laws-lois.justice.gc.ca/eng/XML/I-9.xml",
-    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2018-120.xml"
+    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2018-120.xml",
+    "https://laws-lois.justice.gc.ca/eng/XML/T-13.xml",
+    "https://laws-lois.justice.gc.ca/eng/XML/SOR-2018-227.xml"
 ]
 for url in src:
     act = fed.process_document(url)

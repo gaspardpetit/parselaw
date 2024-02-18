@@ -1004,9 +1004,15 @@ def process_document(url:str) -> Act:
                                         if tbody_row_entry_elem.get("th-headers") is not None:
                                             for part in tbody_row_entry_elem.get("th-headers").split():
                                                 if is_empty(full_text[index]):
-                                                    full_text[index] = f"{headers[index][part]}"
+                                                    if part in headers[index]:
+                                                        full_text[index] = f"{headers[index][part]}"
+                                                    else:
+                                                        full_text[index] = f""
                                                 else:
-                                                    full_text[index] = f"{headers[index][part]} {full_text[index]}"
+                                                    if part in headers[index]:
+                                                        full_text[index] = f"{headers[index][part]} {full_text[index]}"
+                                                    else:
+                                                        full_text[index] = f"{full_text[index]}"
                                             if is_empty(full_text[index]):
                                                 full_text[index] = f"{xml_to_text(tbody_row_entry_elem)}"
                                             else:
