@@ -163,7 +163,7 @@ class Section:
         self.definitions += [definition]
 
 class Act:
-    def __init__(self, short_title:str, long_title:str, chapter:str, consolidated:str):
+    def __init__(self, short_title:str, long_title:str, chapter:str, consolidated:str, regulation_act:str):
         self.short_title:str = short_title
         self.long_title:str = long_title
         self.chapter:str = chapter
@@ -171,6 +171,7 @@ class Act:
         self.schedules:List[Schedule] = []
         self.jurisdiction:str = "Canadian"
         self.consolidated = consolidated
+        self.regulation_act = regulation_act
 
         if self.short_title:
             self.title = self.short_title
@@ -265,22 +266,24 @@ class FormatterMarkdown(Formatter):
 
     def print_section(self, act:Act, section:Section):
         txt = appender()
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         if not is_empty(section.repealed):
-            txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\", was repealed: {section.repealed}\n")
+            txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, was repealed: {section.repealed}\n")
         else:
-            txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+            txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.text}\n")
         self._write(str(txt))
 
     def print_definition(self, act:Act, section:Section, subsection:Subsection, definition:Definition):
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if subsection:
             if not is_empty(definition.repealed):
-                txt.print(f"The definition for \"{definition.term_en}\" in Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\", was repealed: {definition.repealed}\n")
+                txt.print(f"The definition for \"{definition.term_en}\" in Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, was repealed: {definition.repealed}\n")
             else:
                 if len(definition.paragraphs) > 0:
                     if not is_empty(section.text) and not is_empty(subsection.text) and is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label} {subsection.text}\n> " +
                             f"            {definition.term_en}: {definition.text}")
@@ -288,100 +291,101 @@ class FormatterMarkdown(Formatter):
                             txt.print(f">                {paragraph.label} {paragraph.text}")
                         txt.print()
                     elif is_empty(section.text) and not is_empty(subsection.text) and not is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label}{subsection.label} {subsection.text}\n> " +
                             f"        {definition.term_en}: {definition.text}")
                         for paragraph in definition.paragraphs:
                             txt.print(f">            {paragraph.label} {paragraph.text}")
                         txt.print()
                     elif not is_empty(section.text) and is_empty(subsection.text) and not is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label}{definition.term_en}: {definition.text}")
                         for paragraph in definition.paragraphs:
                             txt.print(f">            {paragraph.label} {paragraph.text}")
                         txt.print()
                     elif not is_empty(section.text) and not is_empty(subsection.text) and is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label} {subsection.text}")
                         for paragraph in definition.paragraphs:
                             txt.print(f">            {definition.term_en}:{paragraph.label} {paragraph.text}")
                         txt.print()
                     elif is_empty(section.text) and is_empty(subsection.text) and not is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label}{subsection.label}{paragraph.label} {definition.text}")
                         for paragraph in definition.paragraphs:
                             txt.print(f">        {paragraph.label}{definition.term_en}: {paragraph.text}")
                         txt.print()
                     elif is_empty(section.text) and not is_empty(subsection.text) and is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label}{subsection.label} {subsection.text}")
                         for paragraph in definition.paragraphs:
                             txt.print(f">        {definition.term_en}:{paragraph.label} {paragraph.text}")
                         txt.print()
                     elif not is_empty(section.text) and is_empty(subsection.text) and is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label} {section.text}")
                         for paragraph in definition.paragraphs:
                             txt.print(f">        {subsection.label}{definition.term_en}: {paragraph.label} {paragraph.text}")
                         txt.print()
                     elif is_empty(section.text) and is_empty(subsection.text) and is_empty(definition.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":")
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":")
                         for paragraph in definition.paragraphs:
                             txt.print(f">    {section.label}{subsection.label}{definition.term_en}: {paragraph.label} {paragraph.text}")
                         txt.print()
                 else:
                     if not is_empty(section.text) and not is_empty(subsection.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label} {subsection.text}\n> " +
                             f"            {definition.term_en}: {definition.text}\n")
                     elif is_empty(section.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label}{subsection.label} {subsection.text}\n> " +
                             f"        {definition.term_en}: {definition.text}\n")
                     elif is_empty(subsection.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label}{definition.term_en}: {definition.text}\n")
                     else:
-                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                             f"    {section.label}{subsection.label}{definition.term_en}: {definition.text}\n")
             if not is_empty(definition.term_fr):
                 txt.print()
-                txt.print(f"According to Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\", \"{definition.term_en}\" translate to French as \"{definition.term_fr}\".")
+                txt.print(f"According to Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, \"{definition.term_en}\" translate to French as \"{definition.term_fr}\".")
                 txt.print()
         else:
             if definition.repealed:
-                txt.print(f"The definition for \"{definition.term_en}\" in Section {section.label} of the {act.jurisdiction} \"{act.title}\", was repealed: {definition.repealed}\n")
+                txt.print(f"The definition for \"{definition.term_en}\" in Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, was repealed: {definition.repealed}\n")
             else:
                 if not is_empty(section.text):
-                    txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                    txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                         f"    {section.label} {section.text}\n> " +
                         f"        {definition.term_en}: {definition.text}\n")
                 else:
-                    txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\" defines \"{definition.term_en}\":\n> " +
+                    txt.print(f"Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} defines \"{definition.term_en}\":\n> " +
                         f"    {section.label}{definition.term_en}: {definition.text}\n")
             if not is_empty(definition.term_fr):
                 txt.print()
-                txt.print(f"According to Section {section.label} of the {act.jurisdiction} \"{act.title}\", \"{definition.term_en}\" translate to French as \"{definition.term_fr}\".")
+                txt.print(f"According to Section {section.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, \"{definition.term_en}\" translate to French as \"{definition.term_fr}\".")
                 txt.print()
                     
 
         self._write(str(txt))
         
     def print_paragraph(self, act:Act, section:Section, subsection:Subsection, paragraph:Paragraph):
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if subsection:
             if not is_empty(paragraph.repealed):
-                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\", was repealed: {paragraph.repealed}\n")
+                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, was repealed: {paragraph.repealed}\n")
             else:
                 if len(paragraph.subparagraph) > 0:
                     n_minus_one = max(0, len(paragraph.subparagraph) - 1 - 1)
                     if paragraph.subparagraph[n_minus_one].text.endswith(" and") or paragraph.subparagraph[n_minus_one].text.endswith(" or"):
                         if not is_empty(section.text) and not is_empty(subsection.text) and is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label} {section.text}\n> " +
                                 f"        {subsection.label} {subsection.text}\n> " +
                                 f"            {paragraph.label} {paragraph.text}")
@@ -389,46 +393,46 @@ class FormatterMarkdown(Formatter):
                                 txt.print(f">                {subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif is_empty(section.text) and not is_empty(subsection.text) and not is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label}{subsection.label} {subsection.text}\n> " +
                                 f"        {paragraph.label} {paragraph.text}")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">            {subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif not is_empty(section.text) and is_empty(subsection.text) and not is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label} {section.text}\n> " +
                                 f"        {subsection.label}{paragraph.label} {paragraph.text}")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">            {subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif not is_empty(section.text) and not is_empty(subsection.text) and is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label} {section.text}\n> " +
                                 f"        {subsection.label} {subsection.text}")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">            {paragraph.label}{subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif is_empty(section.text) and is_empty(subsection.text) and not is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label}{subsection.label}{paragraph.label} {paragraph.text}")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">        {subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif is_empty(section.text) and not is_empty(subsection.text) and is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label}{subsection.label} {subsection.text}")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">        {paragraph.label}{subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif not is_empty(section.text) and is_empty(subsection.text) and is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                 f"    {section.label} {section.text}")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">        {subsection.label}{paragraph.label}{subparagraph.label} {subparagraph.text}")
                             txt.print()
                         elif is_empty(section.text) and is_empty(subsection.text) and is_empty(paragraph.text):
-                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:")
+                            txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:")
                             for subparagraph in paragraph.subparagraph:
                                 txt.print(f">    {section.label}{subsection.label}{paragraph.label}{subparagraph.label} {subparagraph.text}")
                             txt.print()
@@ -437,109 +441,112 @@ class FormatterMarkdown(Formatter):
                         for subparagraph in paragraph.subparagraph:
 
                             if not is_empty(section.text) and not is_empty(subsection.text) and not is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label} {section.text}\n> " +
                                     f"        {subsection.label} {subsection.text}\n> " +
                                     f"            {paragraph.label} {paragraph.text}\n> " + 
                                     f"                {subparagraph.label} {subparagraph.text}\n")
                             elif is_empty(section.text) and not is_empty(subsection.text) and not is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label}{subsection.label} {subsection.text}\n> " +
                                     f"        {paragraph.label} {paragraph.text}\n> " + 
                                     f"            {subparagraph.label} {subparagraph.text}\n")
                             elif not is_empty(section.text) and is_empty(subsection.text) and not is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label} {section.text}\n> " +
                                     f"        {subsection.label}{paragraph.label} {paragraph.text}\n> " + 
                                     f"            {subparagraph.label} {subparagraph.text}\n")
                             elif not is_empty(section.text) and not is_empty(subsection.text) and is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label} {section.text}\n> " +
                                     f"        {subsection.label} {subsection.text}\n> " +
                                     f"            {paragraph.label}{subparagraph.label} {subparagraph.text}\n")
                             elif is_empty(section.text) and is_empty(subsection.text) and not is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label}{subsection.label}{paragraph.label} {paragraph.text}\n> " + 
                                     f"        {subparagraph.label} {subparagraph.text}\n")
                             elif is_empty(section.text) and not is_empty(subsection.text) and is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label}{subsection.label} {subsection.text}\n> " +
                                     f"        {paragraph.label}{subparagraph.label} {subparagraph.text}\n")
                             elif not is_empty(section.text) and is_empty(subsection.text) and is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label} {section.text}\n> " +
                                     f"        {subsection.label}{paragraph.label}{subparagraph.label} {subparagraph.text}\n")
                             elif is_empty(section.text) and is_empty(subsection.text) and is_empty(paragraph.text):
-                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                                txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                                     f"    {section.label}{subsection.label}{paragraph.label}{subparagraph.label} {subparagraph.text}\n")
                 else:
                     if not is_empty(section.text) and not is_empty(subsection.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label} {subsection.text}\n> " +
                             f"            {paragraph.label} {paragraph.text}\n")
                     elif is_empty(section.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                             f"    {section.label}{subsection.label} {subsection.text}\n> " +
                             f"        {paragraph.label} {paragraph.text}\n")
                     elif is_empty(subsection.text):
-                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                             f"    {section.label} {section.text}\n> " +
                             f"        {subsection.label}{paragraph.label} {paragraph.text}\n")
                     else:
-                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                        txt.print(f"Section {section.label}, subsection {subsection.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                             f"    {section.label}{subsection.label}{paragraph.label} {paragraph.text}\n")
         else:
             if paragraph.repealed:
-                txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\", was repealed: {paragraph.repealed}\n")
+                txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, was repealed: {paragraph.repealed}\n")
             else:
                 if not is_empty(section.text):
-                    txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                    txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                         f"    {section.label} {section.text}\n> " +
                         f"        {paragraph.label} {paragraph.text}\n")
                 else:
-                    txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                    txt.print(f"Section {section.label}, paragraph {paragraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                         f"    {section.label}{paragraph.label} {paragraph.text}\n")
         self._write(str(txt))
 
     def print_subparagraph(self, act:Act, section:Section, paragraph:Paragraph, subparagraph:Subparagraph):
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if not is_empty(section.text) and not is_empty(paragraph.text):
-            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.label} {section.text}\n> " +
                 f"        {paragraph.label} {paragraph.text}\n> " + 
                 f"            {subparagraph.label} {subparagraph.text}\n")
         elif is_empty(section.text):
-            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.label}{paragraph.label} {paragraph.text}\n> " + 
                 f"            {subparagraph.label} {subparagraph.text}\n")
         elif is_empty(paragraph.text):
-            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.label} {section.text}\n> " +
                 f"        {paragraph.label}{subparagraph.label} {subparagraph.text}\n")
         else:
-            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+            txt.print(f"Section {section.label}, paragraph {paragraph.label}, subparagraph {subparagraph.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                 f"    {section.label}{paragraph.label}{subparagraph.label} {subparagraph.text}\n")
         self._write(str(txt))
 
     def print_subsection(self, act:Act, section:Section, subsection:Subsection):
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         if subsection.repealed:
-            txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\", was repealed: {subsection.repealed}\n")
+            txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}, was repealed: {subsection.repealed}\n")
         else:
             if not is_empty(section.text):
-                txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                     f"    {section.label} {section.text}\n> " +
                     f"        {subsection.label} {subsection.text}\n")
             else:
-                txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\" states:\n> " +
+                txt.print(f"Section {section.label}, subsection {subsection.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} states:\n> " +
                     f"    {section.label}{subsection.label} {subsection.text}\n")
         self._write(str(txt))
     
     def print_schedule_form(self, act:Act, schedule:Schedule, part:FormSchedule):
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         txt = appender()
         txt.print()
-        txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\" provides the following form:")
+        txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} provides the following form:")
         txt.print()
         txt.print(f"Form Id: {part.form_label}")
         txt.print(f"Form Title: {part.form_title}")
@@ -562,11 +569,12 @@ class FormatterMarkdown(Formatter):
                 table=table)
 
     def print_schedule_table_group_table(self, act:Act, schedule:Schedule, table_group:TableGroup, table:TableGroupTable):
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
         self.print_h3(f"{table_group.label} of the {act.title}: {table.caption} - {table.title}")
 
         txt = appender()
         txt.print()
-        txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\" provides the following table:")
+        txt.print(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by} provides the following table:")
         txt.print()
         txt.print(f"| {' | '.join(table.columns)} |")
         txt.print(f"| {' | '.join(['-' * len(col) for col in table.columns])} |")
@@ -585,7 +593,8 @@ class FormatterMarkdown(Formatter):
         self._write(str(txt))
 
     def print_schedule_bilingual_group(self, act:Act, schedule:Schedule, part:BilingualGroupSchedule):
-        self.print_h2(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"")
+        enacted_by = f" enactedby the \"{act.regulation_act}\"" if act.regulation_act else ""
+        self.print_h2(f"{schedule.label} of the {act.jurisdiction} \"{act.title}\"{enacted_by}")
 
         txt = appender()
         txt.print("|        |")
@@ -671,6 +680,8 @@ def process_document(url:str) -> Act:
     long_title_element = document.find('Identification/LongTitle')
     chapter_element = document.find('Identification/Chapter')
     consolidation_elem = document.find('Identification/ConsolidationDate/Date')
+    enabling_authority_elem = document.find('Identification/EnablingAuthority')
+     
     if consolidation_elem is None:
         consolidation_elem = document.find('Identification/BillHistory/Stages[@stage="consolidation"]/Date')
 
@@ -695,7 +706,8 @@ def process_document(url:str) -> Act:
         short_title=xml_to_text(short_title_elem),
         long_title=xml_to_text(long_title_element),
         chapter=chapter,
-        consolidated=consolidation_date
+        consolidated=consolidation_date,
+        regulation_act=xml_to_text(enabling_authority_elem).title()
         )
 
     title_elem = short_title_elem if short_title_elem is not None else long_title_element
